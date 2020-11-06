@@ -31,7 +31,7 @@ class WeiXinProxy:
     def request(self, flow: http.HTTPFlow):
         if flow.request.host == "mp.weixin.qq.com":
             url_path = flow.request.path
-            if url_path.startswith("/s?__biz=") and "uin=" in url_path and "key=" in url_path:
+            if url_path.startswith("/s?__biz=") and "uin=" in url_path and "key=" in url_path and "pass_ticket=" in url_path:
                 biz = self.uin_md5(re.search(r"__biz=([^&]+)&?", url_path).group(1))
                 key = re.search(r"key=([^&]+)&?", url_path).group(1)
                 uin = self.uin_md5(re.search(r"uin=([^&]+)&?", url_path).group(1))
@@ -49,6 +49,3 @@ class WeiXinProxy:
 addons = [
     WeiXinProxy()
 ]
-
-if __name__ == "__main__":
-    pass
