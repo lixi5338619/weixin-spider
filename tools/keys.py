@@ -29,7 +29,6 @@ def get_key_uin(account_biz):
         raise NoneKeyUinError("NoneKeyUinError")
     return json.loads(key_uin, encoding="utf-8")
 
-
 def get_pass_key_and_uin(article_url: str, account_biz: str):
     wx_chat = WeChatWnd(WX_CHAT_WND_NAME)
     key_uin = _get_key_uin(account_biz)
@@ -37,17 +36,14 @@ def get_pass_key_and_uin(article_url: str, account_biz: str):
     while not key_uin:
         try:
             wx_chat.send_msg(article_url)
-            #wx_chat.click_last_msg()
+            ##wx_chat.click_last_msg()
         except Exception as e:
             print(e.args)
             time.sleep(0.2)
         finally:
-            wx_chat.close_web()
+            time.sleep(2)     # 等待两秒后再关闭浏览器窗口  
+            wx_chat.close_web() # 也可以不关闭、正在测试
             time.sleep(2)
             key_uin = _get_key_uin(account_biz)
 
     return json.loads(key_uin, encoding="utf-8")
-
-
-if __name__ == "__main__":
-    pass
