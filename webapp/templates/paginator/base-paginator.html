@@ -1,0 +1,40 @@
+{% macro page(data, url, id=None) %}
+    {% if data %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if data.has_prev %}
+                    <a href="{{ url_for(url, page=data.prev_num, id=id) }}">
+                        <li class="btn btn-white">Prev</li>
+                    </a>
+                {% else %}
+                    <li class="btn btn-white">Prev</li>
+                {% endif %}
+
+                {% for v in data.iter_pages() %}
+                    {% if  v %}
+                        {% if v == data.page %}
+                            <a href="{{ url_for(url, page=v, id=id) }}">
+                                <li class="btn active current-page">{{ v }}</li>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for(url, page=v, id=id) }}">
+                                <li class="btn btn-white">{{ v }}</li>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <li class="btn btn-white">…</li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if data.has_next %}
+                    <a href="{{ url_for(url, page=data.next_num, id=id) }}">
+                        <li class="btn btn-white">Next</li>
+                    </a>
+                {% else %}
+                    <li class="btn btn-white">Prev</li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    {% endif %}
+{% endmacro %}

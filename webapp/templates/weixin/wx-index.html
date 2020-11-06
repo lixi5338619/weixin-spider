@@ -1,0 +1,185 @@
+{% extends "wx-base.html" %}
+{% import "paginator/base-paginator.html" as pg %}
+
+{% block basesearch %}
+    {% include "wx-base-search.html" %}
+{% endblock %}
+{% block contents %}
+    <script>
+        function clear_input() {
+            document.getElementsByName('wx_uri')[0].classList.remove("is-invalid");
+        }
+
+        function re_check(reg, string) {
+            return reg.test(string)
+        }
+
+        function url_check() {
+            var wx_uri = document.getElementsByName('wx_uri')[0];
+            wx_uri.value = wx_uri.value.trim();
+            if (re_check(/^https?:\/\/mp\.weixin\.qq\.com\/.+/, wx_uri.value)) {
+                return true;
+            }
+            wx_uri.classList.add('is-invalid');
+            return false;
+        }
+    </script>
+    <div class="row row-cards row-deck">
+        <div class="col-12">
+            <form action="{{ url_for('wx_app.wx_add') }}" method="get" class="form-group"
+                  onsubmit="return url_check();">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="输入公众号文章链接进行提取" name="wx_uri"
+                           onclick="clear_input()">
+                    <span class="input-group-btn">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fe fe-plus small"></i>
+                            添加公众号
+                        </button>
+                    </span>
+                </div>
+            </form>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover table-outline table-vcenter text-nowrap card-table table-condensed">
+                        <thead>
+                        <tr>
+                            <th class="text-left"><i class="fa fa-weixin"></i></th>
+                            <th class="text-left">微信名称</th>
+                            <th class="text-left">微信号</th>
+                            <th class="text-left">微信ID</th>
+                            <th class="text-left">识别码</th>
+                            <th class="text-left">总量</th>
+                            <th class="text-left">更新时间</th>
+                            <th class="text-left">数据状态</th>
+                            <th class="text-center">运行状态</th>
+                            <th class="text-center">控制</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in page_data.items %}
+                            <tr>
+                                <td class="text-left">
+                                    <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                        <div class="avatar d-block"
+                                             style="background-image: url('{{ item.account_logo }}')">
+                                            <span class="avatar-status bg-green"></span>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td class="text-left">
+                                    <div class=" small">
+                                        <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                            {{ item.account_name }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                            {{ item.account_id }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                            {{ item.account_id_unique }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                            {{ item.account_biz|biz_to_short }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        <a href="{{ url_for('wx_app.wx_account', id=item.id) }}" class="icon">
+                                            {{ item.counts }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">{{ item.update|timestamp2time }}</div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        {% if item.status in [1, 2] %}
+                                            同步中
+                                        {% elif item.end %}
+                                            已同步
+                                        {% else %}
+                                            未同步
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="text-muted">
+                                        {% if item.status == 0 %}
+                                            未运行
+                                        {% elif item.status == 1 %}
+                                            等待中
+                                        {% elif item.status == 2 %}
+                                            运行中
+                                        {% elif item.status == 3 %}
+                                            已暂停
+                                        {% else %}
+                                            异常
+                                        {% endif %}
+                                        <!--
+                                        <i class="fa fa-play text-blue"></i>
+                                        <i class="fa fa-pause text-blue"></i>
+                                        <i class="fa fa-stop text-blue"></i>
+                                        <i class="fa fa-stop text-red"></i>
+                                        -->
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    {% if item.status in [0, 3] %}
+                                        <a href="{{ url_for('wx_app.wx_operate', operate=1, id=item.id) }}"
+                                           class="btn btn-link, btn-sm">
+                                            启动
+                                        </a>
+                                    {% elif item.status in [1, 2] %}
+                                        <a href="{{ url_for('wx_app.wx_operate', operate=0, id=item.id) }}"
+                                           class="btn btn-link, btn-sm">
+                                            停止
+                                        </a>
+                                    {% else %}
+                                        <a href="javascript:void(0);" class="btn btn-link btn-sm">
+                                            异常
+                                        </a>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block paginator %}
+    <div class="float-right">
+        {{ pg.page(page_data, "wx_app.wx_index") }}
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        requirejs(["jquery"], function ($) {
+            $(document).ready(function () {
+                $(".nav_home").addClass("active");
+            })
+        })
+    </script>
+{% endblock %}
+
+

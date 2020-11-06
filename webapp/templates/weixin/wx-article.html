@@ -1,0 +1,62 @@
+{% extends "wx-base.html" %}
+{% block css %}
+{% endblock %}
+{% block contents %}
+    <div class="row">
+        <div class="col-lg-4 order-lg-1 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-wrap p-lg-1">
+                        <h5 class="text-left">评论信息：</h5>
+                        {% for comment in comments %}
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <img class="avatar avatar-md mr-3"
+                                         src="{{ comment.user_logo }}">
+                                    <div>
+                                        <div class="text-muted small">
+                                            {{ comment.user_name }}
+                                        </div>
+                                        <div class="text-left small">
+                                            {{ comment.content }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-wrap p-lg-1">
+                        <div class="page-title text-center p-lg-2">
+                            {{ article.article_title }}
+                        </div>
+                        <div class="small page-item text-center">
+                            {{ article.article_author }}
+                        </div>
+                        <div class="small page-item text-center">
+                            {{ article.article_publish_time|timestamp2time }}
+                        </div>
+                        <div class="page-content">
+                            {{ article.article_html|data_src|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        requirejs(["jquery"], function ($) {
+            $(document).ready(function () {
+                $(".nav_home").addClass("active");
+            })
+        })
+    </script>
+{% endblock %}

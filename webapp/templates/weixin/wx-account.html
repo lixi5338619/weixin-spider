@@ -1,0 +1,151 @@
+{% extends "wx-base.html" %}
+{% import "paginator/base-paginator.html" as pg %}
+
+{% block basesearch %}
+    {% include "wx-base-search.html" %}
+{% endblock %}
+
+{% block contents %}
+    <div class="card card-aside">
+        <div class="card-body d-flex flex-column">
+            <div class="text-center pt-1 ">
+                <div class="avatar avatar-md text-center"
+                     style="background-image: url('{{ account.account_logo }}')"></div>
+
+            </div>
+            <div class="text-center pt-2 ">
+
+                <span class="text-center">{{ account.account_name }}</span>
+                <div class="text-muted">
+                    <small class="d-block text-center">微信号：{{ account.account_id }}
+                        <a href="javascript:void(0)" class="icon" id="copy_id" data-value="{{ account.account_id }}">
+                            <i class="fa fa-copy btn-icon"></i>
+                        </a>
+                    </small>
+
+                </div>
+            </div>
+            <div class="pt-2 text-center text-gray">
+                {{ account.account_desc }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cards row-deck">
+        <div class="col-12">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+                        <thead>
+                        <tr>
+                            <th class="text-left">序号</th>
+                            <th class="text-left">标题</th>
+                            <th class="text-left">作者</th>
+                            <th class="text-left">原创</th>
+                            <th class="text-center">阅读数</th>
+                            <th class="text-center">在看数</th>
+                            <th class="text-center">评论数</th>
+                            <th class="text-left">发布时间</th>
+                            <th class="text-center">文章状态</th>
+                            <th class="text-center">内容详情</th>
+                            <th class="text-center">文章链接</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for article in articles.items %}
+                            <tr>
+                                <td class="text-left">
+                                    <div class="text-muted">{{ article.id }}</div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted" data-value="{{ article.article_title }}">
+                                        {% if article.article_done %}
+                                            <a href="{{ url_for('wx_app.wx_article', id=article.id) }}" class="icon">
+                                                {{ article.article_title|dot_string }}
+                                            </a>
+                                        {% else %}
+                                            <a href="javascript:void(0);" class="icon">
+                                                {{ article.article_title|dot_string }}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">{{ article.article_author }}</div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">
+                                        {% if article.article_copy_right %}
+                                            <i class="fa fa-copyright"></i>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="text-muted">{{ article.read_count }}</div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="text-muted">{{ article.like_count }}</div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="text-muted">{{ article.comment_count }}</div>
+                                </td>
+                                <td class="text-left">
+                                    <div class="text-muted">{{ article.article_publish_time|timestamp2time }}</div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="text-muted">
+                                        {% if article.article_fail %}
+                                            <i class="fe fe-x text-red"></i>
+                                        {% else %}
+                                            <i class="fe fe-check text-blue"></i>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    {% if article.article_done %}
+                                        <a href="{{ url_for('wx_app.wx_article', id=article.id) }}" class="icon">
+                                            <i class="fe fe-file-text text-blue"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="javascript:void(0);" class="icon">
+                                            <i class="fe fe-file-text text-red"></i>
+                                        </a>
+                                    {% endif %}
+
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ article.article_content_url }}" class="icon" target="_blank">
+                                        <div class="text-muted"><i class="fe fe-link text-blue"></i></div>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block paginator %}
+    <div class="float-right">
+        {{ pg.page(articles, "wx_app.wx_account", id=account.id) }}
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        requirejs(["jquery"], function ($) {
+            $(document).ready(function () {
+                $(".nav_home").addClass("active");
+                $("#copy_id").click(function () {
+                    var copy_id = $(this).attr("data-value");
+                    console.log(copy_id);
+                    document.execCommand("Copy");
+                });
+            })
+        })
+    </script>
+{% endblock %}
