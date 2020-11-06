@@ -64,12 +64,12 @@ def get_pass_key_and_uin(article_url: str, account_biz: str):
     while not key_uin:
         try:
             wx_chat.send_msg(article_url)
-            wx_chat.click_last_msg()
         except Exception as e:
             print(e.args)
             time.sleep(0.2)
         finally:
-            wx_chat.close_web()
+            #time.sleep(2)    
+            #wx_chat.close_web()  # 暂时不确定 关闭窗口 或者不关闭 的影响
             time.sleep(2)
             key_uin = _get_key_uin(account_biz)
 
