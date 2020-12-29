@@ -55,7 +55,7 @@ create database weixin_spider  DEFAULT CHARACTER SET utf8mb4;
 ```
 **redis：**  下载安装后启动服务，修改项目settings配置文件，以及addons.py文件。
 
-参考项目代码自行安装配置
+参考项目代码自行安装配置。
 
 
 #### 4. 本地模块
