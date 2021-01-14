@@ -135,3 +135,5 @@ cd tools/ && mitmdump -s ./addons.py  --ssl-insecure
 │  │  │  views.py   (视图文件、接口)
 
 ---
+
+模拟点击的位置需要根据自己显示器分辨率调整，可根据测试文件确定坐标
