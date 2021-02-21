@@ -10,10 +10,11 @@ from mitmproxy import http
 import mitmproxy as mp
 import redis
 
+# FIXME  WX_REDIS_CONFIG ：host，password
 class WeiXinProxy:
     WX_REDIS_CONFIG = {
-        'host': '106.53.236.37',
-        'password': 'lx123456',
+        'host': '127.0.0.1',
+        'password': 'lx',
         'port': 6379,
         'db': 0,
         'decode_responses': True,
