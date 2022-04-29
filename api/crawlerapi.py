@@ -71,7 +71,8 @@ def get_platform_info_from_url(info_uri: str):
     html_content = html.unescape(req_resp.read().decode())
     meta_values = re.findall(r"<span class=\"profile_meta_value\">(.*?)</span>", html_content)
     wx_id_unique = re.search(r"user_name = \"([\w-]+)\";", html_content).group(1)
-    wx_bizs = re.search(r"var biz = \"([\w=]*)\"\|\|\"([\w=]*)\";", html_content).groups()
+    #wx_bizs = re.search(r"var biz = \"([\w=]*)\"\|\|\"([\w=]*)\";", html_content).groups()
+    wx_bizs = re.search(r"var biz = \"([\w=]*)\" \|\| \"([\w=]*)\";", html_content).groups()
     return {
         "account_name": re.search(r"nickname = \"([\w-]+)\"", html_content).group(1),
         "account_id": meta_values[0] if meta_values[0] else wx_id_unique,
